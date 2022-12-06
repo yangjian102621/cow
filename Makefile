@@ -8,6 +8,6 @@ linux:
 .PHONY: server
 
 clean:
-	rm -rf cow bin
+	rm -rf proxy
 .PHONY: clean
 
