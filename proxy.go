@@ -171,7 +171,11 @@ func (hp *httpProxy) Serve(wg *sync.WaitGroup, quit <-chan struct{}) {
 
 	for {
 		conn, err := ln.Accept()
-		if err != nil && !exit {
+		if err == nil {
+			info.Println("Accept a proxy client: " + conn.RemoteAddr().String())
+			c := newClientConn(conn, hp)
+			go c.serve()
+		} else if !exit {
 			errl.Printf("http proxy(%s) accept %v\n", ln.Addr(), err)
 			if isErrTooManyOpenFd(err) {
 				connPool.CloseAll()
@@ -183,8 +187,6 @@ func (hp *httpProxy) Serve(wg *sync.WaitGroup, quit <-chan struct{}) {
 			debug.Println("exiting the http listner")
 			break
 		}
-		c := newClientConn(conn, hp)
-		go c.serve()
 
 	}
 }
@@ -533,6 +535,12 @@ func (c *clientConn) serve() {
 			}
 			return
 		}
+
+		scheme := "http://"
+		if r.isConnect {
+			scheme = "https://"
+		}
+		info.Printf("Target request info {Method: %v, URL: %s%s}\n", r.Method, scheme, r.URL)
 
 		if r.isConnect {
 			// server connection will be closed in doConnect

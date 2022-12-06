@@ -18,7 +18,7 @@ import (
 const (
 	version               = "0.9.8"
 	defaultListenAddr     = "127.0.0.1:7777"
-	defaultEstimateTarget = "example.com"
+	defaultEstimateTarget = "www.baidu.com"
 )
 
 type LoadBalanceMode byte
@@ -299,6 +299,7 @@ func (lp listenParser) ListenCow(val string) {
 	if err != nil {
 		Fatal("listen cow", err)
 	}
+	fmt.Println("hello")
 	addListenProxy(newCowProxy(method, passwd, addr))
 }
 
