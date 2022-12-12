@@ -1,4 +1,6 @@
 *.sublime*
 cow-proxy
+proxy-linux
+proxy-mac
 bin
 .idea
